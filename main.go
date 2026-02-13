@@ -13,7 +13,7 @@ func testUserMysql() {
 	mysqlRepo := mysql.New()
 	createdUser, err := mysqlRepo.Register(entity.User{
 		ID:          0,
-		PhoneNumber: "09382715999",
+		PhoneNumber: "09382715991",
 		Name:        "hosein",
 	})
 	if err != nil {
