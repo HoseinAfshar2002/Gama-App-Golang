@@ -20,8 +20,8 @@ type Service struct {
 }
 
 type RegisterRequest struct {
-	Name        string
-	PhoneNumber string
+	Name        string `json:"full_name"`
+	PhoneNumber string `json:"phone_number"`
 }
 type RegisterResponse struct {
 	User entity.User
