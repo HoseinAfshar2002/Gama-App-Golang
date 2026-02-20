@@ -11,6 +11,7 @@ import (
 type Repository interface {
 	IsPhoneNumberUnique(phoneNumber string) (bool, error)
 	RegisterUser(u entity.User) (entity.User, error)
+	GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error)
 }
 
 func New(repo Repository) Service {
@@ -90,8 +91,20 @@ type LoginResponse struct {
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	//check the exist phone number
 
-	//get the user by phone_number
+	user, exist, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("unexpected error %w", err)
+	}
 
+	if !exist {
+		return LoginResponse{}, fmt.Errorf("username or password is not correct")
+	}
+
+	if user.Password != GetMD5Hash(req.Password) {
+		return LoginResponse{}, fmt.Errorf("username or password is not correct")
+	}
+
+	return LoginResponse{}, nil
 	//check the pass
 
 	//return ok
