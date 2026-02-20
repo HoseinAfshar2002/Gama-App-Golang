@@ -1,6 +1,8 @@
 package userservice
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"game-app/entity"
 	"game-app/pkg/phonenumber"
@@ -22,6 +24,7 @@ type Service struct {
 type RegisterRequest struct {
 	Name        string `json:"full_name"`
 	PhoneNumber string `json:"phone_number"`
+	Password    string `json:"password"`
 }
 type RegisterResponse struct {
 	User entity.User
@@ -49,10 +52,20 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 		return RegisterResponse{}, fmt.Errorf("name length short")
 	}
 
+	//validate pass
+	if len(req.Password) < 6 {
+		return RegisterResponse{}, fmt.Errorf("password length short")
+	}
+
+	//TODO hash the password
+	//pass := []byte(req.Password)
+	//bcrypt.GenerateFromPassword(pass, 0)
+
 	user := entity.User{
 		ID:          0,
 		PhoneNumber: req.PhoneNumber,
 		Name:        req.Name,
+		Password:    GetMD5Hash(req.Password),
 	}
 	// create new user in database or storage
 	createdUser, err := s.repo.RegisterUser(user)
@@ -65,4 +78,28 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 		User: createdUser,
 	}, nil
 
+}
+
+type LoginRequest struct {
+	PhoneNumber string `json:"phone_number"`
+	Password    string `json:"password"`
+}
+type LoginResponse struct {
+}
+
+func (s Service) Login(req LoginRequest) (LoginResponse, error) {
+	//check the exist phone number
+
+	//get the user by phone_number
+
+	//check the pass
+
+	//return ok
+
+	panic("implement me")
+}
+
+func GetMD5Hash(text string) string {
+	hash := md5.Sum([]byte(text))
+	return hex.EncodeToString(hash[:])
 }

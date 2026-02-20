@@ -21,7 +21,8 @@ func (d MysqlDB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 }
 
 func (d MysqlDB) RegisterUser(u entity.User) (entity.User, error) {
-	result, err := d.db.Exec(`INSERT INTO users(name,phone_number)values (?,?)`, u.Name, u.PhoneNumber)
+	result, err := d.db.Exec(`INSERT INTO users(name,phone_number,password)values (?,?,?)`,
+		u.Name, u.PhoneNumber, u.Password)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("insert user error: %w", err)
 	}
